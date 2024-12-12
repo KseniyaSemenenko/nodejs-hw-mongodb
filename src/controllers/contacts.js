@@ -11,9 +11,9 @@ export const getAllContacts = async (req, res) => {
 };
 
 export const getContactById = async (req, res, next) => {
-  const { id } = req.params;
+  const { contactId } = req.params;
 
-  const data = await contactServices.getContactById(id);
+  const data = await contactServices.getContactById(contactId);
 
   if (!data) {
     throw createHttpError(404, 'Contact not found');
@@ -21,7 +21,7 @@ export const getContactById = async (req, res, next) => {
 
   res.json({
     status: 200,
-    message: `Successfully found contact with id ${id}!`,
+    message: `Successfully found contact with id ${contactId}!`,
     data,
   });
 };
@@ -43,4 +43,18 @@ export const deleteContact = async (req, res, next) => {
     return;
   }
   res.status(204).send();
+};
+
+export const upsertContact = async (req, res, next) => {
+  const { contactId } = req.params;
+
+  const result = await contactServices.editContact(contactId, req.body);
+  if (!result) {
+    return next(createHttpError(404, 'Contact not found'));
+  }
+  res.json({
+    status: 200,
+    message: 'Successfully patched a contact!',
+    data: result,
+  });
 };
