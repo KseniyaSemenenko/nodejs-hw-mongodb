@@ -39,8 +39,7 @@ export const deleteContact = async (req, res, next) => {
   const { contactId } = req.params;
   const contact = await contactServices.deleteContact(contactId);
   if (!contact) {
-    next(createHttpError(404, 'Contact not found'));
-    return;
+    throw createHttpError(404, 'Contact not found');
   }
   res.status(204).send();
 };
@@ -50,7 +49,7 @@ export const upsertContact = async (req, res, next) => {
 
   const result = await contactServices.editContact(contactId, req.body);
   if (!result) {
-    return next(createHttpError(404, 'Contact not found'));
+    throw createHttpError(404, 'Contact not found');
   }
   res.json({
     status: 200,
