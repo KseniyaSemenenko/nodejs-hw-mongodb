@@ -17,6 +17,9 @@ export const getAllContacts = async ({
   if (filter.contactType) {
     contactsQuery.where('contactType').equals(filter.contactType);
   }
+  if (filter.userId) {
+    contactsQuery.where('userId').equals(filter.userId);
+  }
 
   const contactsCount = await ContactCollection.find()
     .merge(contactsQuery)
