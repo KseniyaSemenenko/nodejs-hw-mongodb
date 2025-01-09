@@ -27,7 +27,7 @@ export const getAllContacts = async (req, res) => {
 
 export const getContactById = async (req, res) => {
   const { _id: userId } = req.user;
-  const { id: _id } = req.params;
+  const { contactId: _id } = req.params;
 
   const data = await contactServices.getContactById({ _id, userId });
 
@@ -53,9 +53,9 @@ export const addContact = async (req, res) => {
   });
 };
 
-export const deleteContact = async (req, res, next) => {
-  const { id: _id } = req.params;
+export const deleteContact = async (req, res) => {
   const { _id: userId } = req.user;
+  const { contactId: _id } = req.params;
 
   const contact = await contactServices.deleteContact({ _id, userId });
   if (!contact) {
@@ -64,23 +64,19 @@ export const deleteContact = async (req, res, next) => {
   res.status(204).send();
 };
 
-export const upsertContact = async (req, res, next) => {
-  const { contactId } = req.params;
+export const upsertContact = async (req, res) => {
+  const { contactId: _id } = req.params;
   const { _id: userId } = req.user;
-  const { isNew, data } = await contactServices.editContact(contactId, {
-    ...req.body,
-    userId,
-  });
 
-  const status = isNew ? 201 : 200;
+  const result = await contactServices.editContact({ _id, userId }, req.body);
 
-  if (!data) {
+  if (!result) {
     throw createHttpError(404, 'Contact not found');
   }
 
-  res.status(status).json({
-    status,
+  res.json({
+    status: 200,
     message: 'Successfully patched a contact!',
-    data,
+    data: result.data,
   });
 };

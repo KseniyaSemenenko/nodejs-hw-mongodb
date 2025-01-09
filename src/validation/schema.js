@@ -17,7 +17,7 @@ export const createContactSchema = Joi.object({
     'string.base': 'Email should be a string',
     'string.email': 'Enter validate email!',
   }),
-  isFavorite: Joi.boolean().messages({
+  isFavourite: Joi.boolean().messages({
     'boolean.base': '"isFavorite" must be a boolean value',
     'boolean.empty': '"isFavorite" cannot be empty',
   }),
@@ -35,6 +35,6 @@ export const updateContactSchema = Joi.object({
   name: Joi.string().min(3).max(20),
   phoneNumber: Joi.string().min(3).max(20),
   email: Joi.string().email(),
-  isFavorite: Joi.boolean(),
+  isFavourite: Joi.boolean(),
   contactType: Joi.string().valid('work', 'home', 'personal'),
 });
