@@ -2,6 +2,9 @@ import createHttpError from 'http-errors';
 import bcrypt from 'bcrypt';
 import { randomBytes } from 'crypto';
 import jwt from 'jsonwebtoken';
+import path from 'node:path';
+import handlebars from 'handlebars';
+import fs from 'node:fs/promises';
 
 import { UserCollection } from '../db/models/User.js';
 import { SessionCollection } from '../db/models/Session.js';
@@ -10,12 +13,10 @@ import {
   accessTokenLifetime,
   refreshTokenLifetime,
 } from '../constants/users.js';
-import { getEnvVar } from '../utils/getEnvVar.js';
 import { SMTP, TEMPLATES_DIR } from '../constants/index.js';
+
+import { getEnvVar } from '../utils/getEnvVar.js';
 import { sendMail } from '../utils/sendMail.js';
-import path from 'node:path';
-import handlebars from 'handlebars';
-import fs from 'node:fs/promises';
 
 const createSessionData = () => ({
   accessToken: randomBytes(30).toString('base64'),
@@ -124,7 +125,7 @@ export const sendResetToken = async (email) => {
       subject: 'Reset your password',
       html,
     });
-  } catch (err) {
+  } catch {
     throw createHttpError(
       500,
       'Failed to send the email, please try again later.',
@@ -137,7 +138,7 @@ export const resetPassword = async (payload) => {
 
   try {
     entries = jwt.verify(payload.token, getEnvVar('JWT_SECRET'));
-  } catch (err) {
+  } catch {
     throw createHttpError(401, 'Token is expired or invalid.');
   }
 

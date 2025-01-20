@@ -1,4 +1,5 @@
 import * as authServices from '../services/auth.js';
+
 const setupSession = (res, session) => {
   res.cookie('refreshToken', session.refreshToken, {
     httpOnly: true,
